@@ -43,6 +43,10 @@ app.use(
   })
 );
 
+app.get("/",(req,res)=>{
+  res.send("Hello letsStream")
+})
+
 //middlewares
 app.use(cookieParser())
 app.use(express.json());

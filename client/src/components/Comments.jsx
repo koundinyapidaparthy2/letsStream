@@ -31,13 +31,20 @@ const Input = styled.input`
 const Comments = ({videoId}) => {
 
   const { currentUser } = useSelector((state) => state.user);
+  const { access_token } = useSelector((state) => state.user);
 
   const [comments, setComments] = useState([]);
 
   useEffect(() => {
     const fetchComments = async () => {
       try {
-        const res = await axios.get( process.env.REACT_APP_BACKEND_URL + `/comments/${videoId}`);
+        const res = await axios.get( process.env.REACT_APP_BACKEND_URL + `/comments/${videoId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${access_token}`,
+            },
+          }
+        );
         setComments(res.data);
       } catch (err) {}
     };

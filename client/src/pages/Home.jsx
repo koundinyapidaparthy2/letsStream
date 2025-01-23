@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Card from "../components/Card";
 import axios from "axios";
+import { useSelector } from "react-redux";
+
 const Container = styled.div`
   display: flex;
   justify-content: space-between;
@@ -10,10 +12,17 @@ const Container = styled.div`
 
 const Home = ({type}) => {
   const [videos, setVideos] = useState([]);
+  const { access_token } = useSelector((state) => state.user);
 
   useEffect(() => {
     const fetchVideos = async () => {
-      const res = await axios.get( process.env.REACT_APP_BACKEND_URL + `/videos/${type}`);
+      const res = await axios.get( process.env.REACT_APP_BACKEND_URL + `/videos/${type}`,
+        {
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+          },
+        }
+      );
       setVideos(res.data);
     };
     fetchVideos();

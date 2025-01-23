@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import {format} from "timeago.js";
+import { useSelector } from "react-redux";
 
 const Container = styled.div`
   width: ${(props) => props.type !== "sm" && "360px"};
@@ -55,10 +56,17 @@ const Info = styled.div`
 
 const Card = ({ type, video }) => {
   const [channel, setChannel] = useState({});
+  const { access_token } = useSelector((state) => state.user);
 
   useEffect(() => {
     const fetchChannel = async () => {
-      const res = await axios.get( process.env.REACT_APP_BACKEND_URL + `/users/find/${video.userId}`);
+      const res = await axios.get( process.env.REACT_APP_BACKEND_URL + `/users/find/${video.userId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+          },
+        }
+      );
       setChannel(res.data);
     };
     fetchChannel();

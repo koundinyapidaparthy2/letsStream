@@ -9,6 +9,7 @@ import {
 import app from "../firebase";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 
 const Container = styled.div`
@@ -78,6 +79,7 @@ const Upload = ({ setOpen }) => {
   const [videoPerc, setVideoPerc] = useState(0);
   const [inputs, setInputs] = useState({});
   const [tags, setTags] = useState([]);
+  const { access_token } = useSelector((state) => state.user);
 
   const navigate = useNavigate()
 
@@ -135,7 +137,13 @@ const Upload = ({ setOpen }) => {
 
   const handleUpload = async (e)=>{
     e.preventDefault();
-    const res = await axios.post( process.env.REACT_APP_BACKEND_URL + "/videos", {...inputs, tags})
+    const res = await axios.post( process.env.REACT_APP_BACKEND_URL + "/videos", {...inputs, tags},
+      {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      }
+    )
     setOpen(false)
     res.status===200 && navigate(`/video/${res.data._id}`)
   }

@@ -119,6 +119,8 @@ const VideoFrame = styled.video`
 const Video = () => {
   const { currentUser } = useSelector((state) => state.user);
   const { currentVideo  } = useSelector((state) => state.video);
+  const { access_token } = useSelector((state) => state.user);
+  
   const dispatch = useDispatch();
 
   const path = useLocation().pathname.split("/")[2];
@@ -128,7 +130,13 @@ const Video = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const videoRes = await axios.get( process.env.REACT_APP_BACKEND_URL + `/videos/find/${path}`);
+        const videoRes = await axios.get( process.env.REACT_APP_BACKEND_URL + `/videos/find/${path}`,
+          {
+            headers: {
+              Authorization: `Bearer ${access_token}`,
+            },
+          }
+        );
         const channelRes = await axios.get( process.env.REACT_APP_BACKEND_URL + 
           `/users/find/${videoRes.data.userId}`
         );

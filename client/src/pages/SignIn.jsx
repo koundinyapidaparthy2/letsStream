@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { loginFailure, loginStart, loginSuccess } from "../redux/userSlice";
 import { auth, provider } from "../firebase";
@@ -75,12 +75,19 @@ const SignIn = () => {
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate()
+  const { access_token } = useSelector((state) => state.user);
 
   const handleLogin = async (e) => {
     e.preventDefault();
     dispatch(loginStart());
     try {
-      const res = await axios.post( process.env.REACT_APP_BACKEND_URL + "/auth/signin", { name, password });
+      const res = await axios.post( process.env.REACT_APP_BACKEND_URL + "/auth/signin", { name, password },
+        {
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+          },
+        }
+      );
       dispatch(loginSuccess(res.data));
       navigate("/")
     } catch (err) {
@@ -92,11 +99,14 @@ const SignIn = () => {
     dispatch(loginStart());
     signInWithPopup(auth, provider)
       .then((result) => {
-        axios
-          .post("/auth/google", {
+        axios.post( process.env.REACT_APP_BACKEND_URL + "/auth/google", {
             name: result.user.displayName,
             email: result.user.email,
             img: result.user.photoURL,
+          },{
+            headers: {
+              Authorization: `Bearer ${access_token}`, 
+            },
           })
           .then((res) => {
             console.log(res)

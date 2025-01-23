@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import { useSelector } from "react-redux";
 
 const Container = styled.div`
   display: flex;
@@ -38,10 +39,17 @@ const Text = styled.span`
 
 const Comment = ({ comment }) => {
   const [channel, setChannel] = useState({});
+  const { access_token } = useSelector((state) => state.user);
 
   useEffect(() => {
     const fetchComment = async () => {
-      const res = await axios.get( process.env.REACT_APP_BACKEND_URL + `/users/find/${comment.userId}`);
+      const res = await axios.get( process.env.REACT_APP_BACKEND_URL + `/users/find/${comment.userId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+          },
+        }
+      );
       setChannel(res.data)
     };
     fetchComment();

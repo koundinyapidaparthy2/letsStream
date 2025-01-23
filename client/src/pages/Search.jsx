@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import Card from "../components/Card";
+import { useSelector } from "react-redux";
 
 const Container = styled.div`
   display: flex;
@@ -13,10 +14,17 @@ const Container = styled.div`
 const Search = () => {
   const [videos, setVideos] = useState([]);
   const query = useLocation().search;
+  const { access_token } = useSelector((state) => state.user);
 
   useEffect(() => {
     const fetchVideos = async () => {
-      const res = await axios.get( process.env.REACT_APP_BACKEND_URL + `/videos/search${query}`);
+      const res = await axios.get( process.env.REACT_APP_BACKEND_URL + `/videos/search${query}`,
+        {
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+          },
+        }
+      );
       setVideos(res.data);
     };
     fetchVideos();

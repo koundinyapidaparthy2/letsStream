@@ -24,24 +24,14 @@ const connect = () => {
 };
 
 // cors 
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      if (!origin) return callback(null, true);
+app.use(cors({
+  origin: 'https://your-vercel-app.vercel.app', // Allow only your Vercel frontend
+  credentials: true, // Allow cookies and authentication headers
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'], // Allow all HTTP methods
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'], // Allow necessary headers
+}));
 
-      callback(null, origin);
-    },
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Define allowed methods explicitly
-    allowedHeaders: [
-      "Content-Type",
-      "Authorization",
-      "Cache-Control",
-      "Expires",
-      "Pragma",
-    ],
-    credentials: true, // Support cookies or authentication headers
-  })
-);
+app.options('*', cors()); // Allow preflight for all routes
 
 app.get("/",(req,res)=>{
   res.send("Hello letsStream")

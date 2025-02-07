@@ -25,7 +25,7 @@ const connect = () => {
 
 // cors 
 app.use(cors({
-  origin: 'https://your-vercel-app.vercel.app', // Allow only your Vercel frontend
+  origin: '*', // Allow only your Vercel frontend
   credentials: true, // Allow cookies and authentication headers
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'], // Allow all HTTP methods
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'], // Allow necessary headers
